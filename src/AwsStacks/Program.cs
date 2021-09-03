@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Amazon.CDK.AWS.CodeBuild;
+using AwsStacks.Constructs;
+using AwsStacks.Models;
 
 namespace AwsStacks
 {
@@ -10,7 +13,21 @@ namespace AwsStacks
         public static void Main(string[] args)
         {
             var app = new App();
-            new AwsStacksStack(app, "AwsStacksStack", new StackProps
+            //new LambdaBucket(app, "lambda_bucket");
+            var env = (string) app.Node.TryGetContext("env");
+            var envFields = (Dictionary<string, object>)app.Node.TryGetContext(env);
+            var projectEnvironment = ProjectEnvironment.GetObject(envFields);
+            
+            Console.WriteLine(projectEnvironment);
+
+            var projectProps = new ProjectStackProps()
+            {
+                ProjectEnvironment = projectEnvironment
+            };
+
+            new Core(app, "core", projectProps);
+            new Identity(app, "identity", projectProps);
+            /*new AwsStacksStack(app, "AwsStacksStack", new StackProps
             {
                 // If you don't specify 'env', this stack will be environment-agnostic.
                 // Account/Region-dependent features and context lookups will not work,
@@ -18,13 +35,13 @@ namespace AwsStacks
 
                 // Uncomment the next block to specialize this stack for the AWS Account
                 // and Region that are implied by the current CLI configuration.
-                /*
+                
                 Env = new Amazon.CDK.Environment
                 {
                     Account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT"),
                     Region = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_REGION"),
                 }
-                */
+                
 
                 // Uncomment the next block if you know exactly what Account and Region you
                 // want to deploy the stack to.
@@ -37,7 +54,7 @@ namespace AwsStacks
                 */
 
                 // For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-            });
+            //});
 
             app.Synth();
         }
