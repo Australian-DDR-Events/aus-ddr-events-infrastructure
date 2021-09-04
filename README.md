@@ -1,13 +1,41 @@
 # AWS Stacks
 
-This is a collection of AWS stacks used by AusDdrEvents.
+This is a collection of AWS stacks used by AusDdrEvents. This will deploy the following stacks:
 
+## identity/cognito
+
+An AWS cognito UserPool. This is used for user and service authentication purposes. In addition, it will:
+- Attach an SES for email purposes
+- Register a firebase user migration trigger
+- Add a custom domain with an ACM SSL certificate
+- Create a PKCE test app
+
+## core/ecr-stack
+
+An ECR for storage of API docker images. This _probably_ needs to be made generic.
+
+## core/aus-ddr-events-cdn-{ENVIRONMENT}-stack
+
+A collection of resources for hosting a frontend in the form of two CDNs. This has one for `root` assets (such as the html and javascript), as well as general `assets`.
+
+### root
+
+- An S3 bucket for storage
+- A cloudfront instance using the S3 bucket as an origin
+- A custom domain using an ACM certificate
+- A default file, `index.html`
+
+### assets
+
+- An S3 bucket for storage
+- A cloudfront instance using the S3 bucket as an origin
+- A custom domain using an ACM certificate
 
 # Deploying
 
 ## Prerequisites
 
-To follow this document, you will need to ensure you have (Docker)[https://www.docker.com/] installed. This will take care of any other requirements.
+To follow this document, you will need to ensure you have [Docker](https://www.docker.com/) installed. This will take care of any other requirements.
 
 **NOTE** no docker image yet for CDK. Need to update.
 
@@ -28,7 +56,7 @@ Some of the resources will incur a fee. With little to no usage, this should be 
 
 ### Custom Domain
 
-This expects that you have your own custom domain. I would recommend going for a provider like (Google)[https://domains.google.com/registrar/], but anyone should work.
+This expects that you have your own custom domain. I would recommend going for a provider like [Google](https://domains.google.com/registrar/), but anyone should work.
 
 You will need the ability to add custom DNS records. Specifically:
 - CNAME records
@@ -39,7 +67,7 @@ You will need the ability to add custom DNS records. Specifically:
 
 SES (Simple Email Service) allows you to send emails from AWS. Create a new `Verified Identity` in the **US-EAST-1** region, and update your DNS settings with the DNS records provided.
 
-After your identity has been verified, you will need to create a new `Email address identity` to test the service. This is because, by default, your SES account will be a sandbox account. To send emails to any address, you will need to leave the sandbox as outlined in (this document)[https://docs.aws.amazon.com/console/ses/sandbox].
+After your identity has been verified, you will need to create a new `Email address identity` to test the service. This is because, by default, your SES account will be a sandbox account. To send emails to any address, you will need to leave the sandbox as outlined in [this document](https://docs.aws.amazon.com/console/ses/sandbox).
 
 Be sure to take note of the ARN for your SES, it will be in the format:
 
@@ -48,7 +76,7 @@ Be sure to take note of the ARN for your SES, it will be in the format:
 
 ### ACM
 
-ACM (Certificates Manager) is used to manage SSL certificates. You can import certificates from other providers such as (LetsEncrypt)[https://letsencrypt.org/] or just ACM directly to generate your SSL certificates.
+ACM (Certificates Manager) is used to manage SSL certificates. You can import certificates from other providers such as [LetsEncrypt](https://letsencrypt.org/) or just ACM directly to generate your SSL certificates.
 
 These should be stored in the **US-EAST-1** region. Click `Request a certificate` to start the process. You will need to request 3 separate certificates:
 - Cognito certificate for identity purposes (eg. login.my-domain.com)
