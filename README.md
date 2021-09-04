@@ -117,3 +117,18 @@ This will create three CloudFormation stacks:
 - A core ECR stack. This is for any docker images (to be used by the Aus DDR Events API).
 - A cognito stack. This is for authentication. Comes with a migration trigger against firebase.
 - A cdn stack. This has two CloudFront instances: one for the website hosting, and one for assets.
+
+
+# Todo
+
+### ACM Stack
+
+If a domain uses Route53 as the DNS provider, CDK can automatically initiate an ACM request, update the DNS records and provision the certificate. [Documented here](https://docs.aws.amazon.com/cdk/api/latest/docs/aws-certificatemanager-readme.html)
+
+### Create API stack
+
+The API should be deployable to AWS. Unsure how this should be done.
+
+- Using raw EC2. Cheapest option, quite a lot of manual configuration or scripts.
+- Using ECS. Load balancer will add cost, can still be relatively cheap when using either EC2 or Fargate.
+- Using EKS. Probably best option for scalability and ease of setup. Very costly.
