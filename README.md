@@ -30,6 +30,9 @@ A collection of resources for hosting a frontend in the form of two CDNs. This h
 - An S3 bucket for storage
 - A cloudfront instance using the S3 bucket as an origin
 - A custom domain using an ACM certificate
+- A user with restricted access to s3 only
+
+`note: SecureString SSM parameters cannot be created through CloudFormation. Code is in place in the case this ever becomes a possibility`
 
 # Deploying
 
