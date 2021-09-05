@@ -2,6 +2,7 @@ using Amazon.CDK;
 using Amazon.CDK.AWS.CertificateManager;
 using Amazon.CDK.AWS.CloudFront;
 using Amazon.CDK.AWS.CloudFront.Origins;
+using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.S3;
 using AwsStacks.Models;
 
@@ -27,6 +28,51 @@ namespace AwsStacks.StackElements
                 BlockPublicAccess = BlockPublicAccess.BLOCK_ALL,
                 PublicReadAccess = false
             });
+
+            var policy = new Policy(this, $"cdn-access-policy-{env}", new PolicyProps
+            {
+                Statements = new[]
+                {
+                    new PolicyStatement(new PolicyStatementProps
+                    {
+                        Resources = new[]
+                        {
+                            assetsBucket.BucketArn,
+                            rootBucket.BucketArn
+                        },
+                        Actions = new[]
+                        {
+                            "s3:*"
+                        },
+                        Effect = Effect.ALLOW
+                    })
+                }
+            });
+            
+            var user = new User(this, $"cdn-access-user-{env}");
+            
+            policy.AttachToUser(user);
+
+            // var accessKey = new CfnAccessKey(this, $"cdn-access-user-key-{env}", new CfnAccessKeyProps
+            // {
+            //     UserName = user.UserName
+            // });
+            //
+            // new StringParameter(this, $"cdn-access-user-accesskey-{env}", new StringParameterProps
+            // {
+            //     Type = ParameterType.SECURE_STRING,
+            //     ParameterName = $"/{env}/cdn/accesskey",
+            //     StringValue = accessKey.Ref,
+            //     Tier = ParameterTier.STANDARD
+            // });
+            //
+            // new StringParameter(this, $"cdn-access-user-secretaccesskey-{env}", new StringParameterProps
+            // {
+            //     Type = ParameterType.SECURE_STRING,
+            //     ParameterName = $"/{env}/cdn/secretaccesskey",
+            //     StringValue = accessKey.AttrSecretAccessKey,
+            //     Tier = ParameterTier.STANDARD
+            // });
 
             var assetsOrigin = new S3Origin(assetsBucket);
             var rootOrigin = new S3Origin(rootBucket);

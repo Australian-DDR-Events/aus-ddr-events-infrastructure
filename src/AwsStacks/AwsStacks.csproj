@@ -16,6 +16,7 @@
     <PackageReference Include="Amazon.CDK.AWS.ECS" Version="1.120.0" />
     <PackageReference Include="Amazon.CDK.AWS.ECS.Patterns" Version="1.120.0" />
     <PackageReference Include="Amazon.CDK.AWS.S3" Version="1.120.0" />
+    <PackageReference Include="Amazon.CDK.AWS.SSM" Version="1.120.0" />
 
     <!-- jsii Roslyn analyzers (un-comment to obtain compile-time checks for missing required props
     <PackageReference Include="Amazon.Jsii.Analyzers" Version="*" PrivateAssets="all" />

@@ -87,6 +87,55 @@ namespace AwsStacks.StackElements
                 GenerateSecret = false
             });
 
+            UserPool.AddClient("aus-ddr-events-staging", new UserPoolClientOptions
+            {
+                OAuth = new OAuthSettings
+                {
+                    CallbackUrls = new []
+                    {
+                        "https://stg.ausddrevents.com",
+                        "https://stg.ausddrevents.com/login"
+                    },
+                    Flows = new OAuthFlows
+                    {
+                        ClientCredentials = false,
+                        AuthorizationCodeGrant = true,
+                        ImplicitCodeGrant = false
+                    },
+                    LogoutUrls = new []
+                    {
+                        "https://stg.ausddrevents.com/logout"
+                    },
+                },
+                GenerateSecret = false
+            });
+
+            UserPool.AddClient("aus-ddr-events-production", new UserPoolClientOptions
+            {
+                OAuth = new OAuthSettings
+                {
+                    CallbackUrls = new []
+                    {
+                        "https://ausddrevents.com",
+                        "https://ausddrevents.com/login",
+                        "https://www.ausddrevents.com",
+                        "https://www.ausddrevents.com/login"
+                    },
+                    Flows = new OAuthFlows
+                    {
+                        ClientCredentials = false,
+                        AuthorizationCodeGrant = true,
+                        ImplicitCodeGrant = false
+                    },
+                    LogoutUrls = new []
+                    {
+                        "https://ausddrevents.com/logout",
+                        "https://www.ausddrevents.com/logout"
+                    },
+                },
+                GenerateSecret = false
+            });
+
             UserPool.AddResourceServer("aus-ddr-events-api", new UserPoolResourceServerOptions
             {
                 Identifier = "aus-ddr-events-api",
