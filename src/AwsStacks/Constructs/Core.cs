@@ -1,6 +1,6 @@
 using Amazon.CDK;
 using AwsStacks.Models;
-using AwsStacks.StackElements;
+using AwsStacks.Stacks;
 
 namespace AwsStacks.Constructs
 {
@@ -8,7 +8,7 @@ namespace AwsStacks.Constructs
     {
         public Core(Construct scope, string id, ProjectStackProps stackProps) : base(scope, id)
         {
-            new ECRStack(this, "aus-ddr-events-api-ecr-stack", null);
+            new ECRStack(this, "aus-ddr-events-api-ecr-stack", stackProps);
 
             new CdnStack(this, $"aus-ddr-events-cdn-{stackProps.ProjectEnvironment.env}-stack", stackProps);
         }

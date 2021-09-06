@@ -6,8 +6,9 @@ using Amazon.CDK.AWS.Cognito;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.SSM;
 using AwsStacks.Models;
+using AwsStacks.StackItems;
 
-namespace AwsStacks.StackElements
+namespace AwsStacks.Stacks
 {
     public class CognitoStack : Stack
     {
@@ -71,7 +72,8 @@ namespace AwsStacks.StackElements
                 {
                     CallbackUrls = new []
                     {
-                        "http://localhost:3000"
+                        "http://localhost:3000",
+                        "http://localhost:1234"
                     },
                     Flows = new OAuthFlows
                     {
@@ -81,7 +83,8 @@ namespace AwsStacks.StackElements
                     },
                     LogoutUrls = new []
                     {
-                        "http://localhost:3000/logout"
+                        "http://localhost:3000/logout",
+                        "http://localhost:1234/logout"
                     },
                 },
                 GenerateSecret = false
@@ -136,7 +139,7 @@ namespace AwsStacks.StackElements
                 GenerateSecret = false
             });
 
-            UserPool.AddResourceServer("aus-ddr-events-api", new UserPoolResourceServerOptions
+            var ausDdrEventsApi = UserPool.AddResourceServer("aus-ddr-events-api", new UserPoolResourceServerOptions
             {
                 Identifier = "aus-ddr-events-api",
                 Scopes = new[]
@@ -147,6 +150,28 @@ namespace AwsStacks.StackElements
                         ScopeName = "user:read"
                     })
                 }
+            });
+            
+            var discordClient = UserPool.AddClient("aus-ddr-discord", new UserPoolClientOptions
+            {
+                OAuth = new OAuthSettings
+                {
+                    Flows = new OAuthFlows
+                    {
+                        ClientCredentials = true,
+                        AuthorizationCodeGrant = false,
+                        ImplicitCodeGrant = false
+                    },
+                    Scopes = new []
+                    {
+                        OAuthScope.ResourceServer(ausDdrEventsApi, new ResourceServerScope(new ResourceServerScopeProps
+                        {
+                            ScopeDescription = "Read",
+                            ScopeName = "user:read"
+                        })), 
+                    }
+                },
+                GenerateSecret = true
             });
 
             UserPool.AddDomain("ausddrevents", new UserPoolDomainOptions
@@ -165,6 +190,8 @@ namespace AwsStacks.StackElements
                 EmailSendingAccount = "DEVELOPER",
                 From = props.ProjectEnvironment.cognito.emailFromAddress
             };
+
+            StackParameter.AddStackParameter(this, "cognito", props);
         }
 
     }

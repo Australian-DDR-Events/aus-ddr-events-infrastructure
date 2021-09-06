@@ -4,9 +4,11 @@ using Amazon.CDK.AWS.CloudFront;
 using Amazon.CDK.AWS.CloudFront.Origins;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.S3;
+using Amazon.CDK.AWS.SSM;
 using AwsStacks.Models;
+using AwsStacks.StackItems;
 
-namespace AwsStacks.StackElements
+namespace AwsStacks.Stacks
 {
     public class CdnStack : Stack
     {
@@ -136,6 +138,8 @@ namespace AwsStacks.StackElements
             {
                 Name = $"root-domain-name-{env}"
             });
+
+            StackParameter.AddStackParameter(this, "cdn", props);
         }
     }
 }
