@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Firebase.Auth;
@@ -16,12 +17,14 @@ namespace MigrateUserTrigger
         
         public async Task<CognitoEvent> FunctionHandler(CognitoEvent migrateUserEvent, ILambdaContext context)
         {
+            Console.WriteLine($"Started auth check for user {migrateUserEvent.userName}");
             migrateUserEvent.response = migrateUserEvent.triggerSource switch
             {
                 "UserMigration_Authentication" => await AuthenticationHandler(migrateUserEvent.userName, migrateUserEvent.request),
                 "UserMigration_ForgotPassword" => await ForgotPasswordHandler(migrateUserEvent.userName),
                 _ => migrateUserEvent.response
             };
+            Console.WriteLine($"Finshed auth check for user {migrateUserEvent.userName}");
             return migrateUserEvent;
         }
 
@@ -32,23 +35,32 @@ namespace MigrateUserTrigger
             {
                 provider = new FirebaseAuthProvider(new FirebaseConfig(Environment.GetEnvironmentVariable("FIREBASE_API_KEY")));
             }
-            var user = await provider.SignInWithEmailAndPasswordAsync(userName, request.password);
-            if (user is {User: { }})
+            Console.WriteLine($"Starting sign in {userName}");
+            try
             {
-                return new MigrateUserResponse
+                var user = await provider.SignInWithEmailAndPasswordAsync(userName, request.password);
+                Console.WriteLine($"Sign in complete for {userName}");
+                if (user is {User: { }})
                 {
-                    userAttributes = new Dictionary<string, object>
+                    return new MigrateUserResponse
                     {
-                        {"email", user.User.Email},
-                        {"username", user.User.Email},
-                        {"email_verified", user.User.IsEmailVerified},
-                        {"legacy_id", user.User.LocalId}
-                    },
-                    finalUserStatus = "CONFIRMED",
-                    messageAction = "SUPPRESS",
-                    desiredDeliveryMediums = new []{"EMAIL"},
-                    forceAliasCreation = false
-                };
+                        userAttributes = new Dictionary<string, object>
+                        {
+                            {"email", user.User.Email},
+                            {"username", user.User.Email},
+                            {"email_verified", user.User.IsEmailVerified},
+                            {"nickname", user.User.DisplayName},
+                            {"custom:legacy_id", user.User.LocalId}
+                        },
+                        finalUserStatus = "CONFIRMED",
+                        messageAction = "SUPPRESS",
+                        desiredDeliveryMediums = new[] {"EMAIL"},
+                        forceAliasCreation = false
+                    };
+                }
+            }
+            catch
+            {
             }
 
             return null;
@@ -72,6 +84,7 @@ namespace MigrateUserTrigger
                         {"email", u.email},
                         {"username", u.email},
                         {"email_verified", true},
+                        {"nickname", user.User.DisplayName},
                         {"custom:legacy_id", u.uid}
                     },
                     finalUserStatus = "RESET_REQUIRED",

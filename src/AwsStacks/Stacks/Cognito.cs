@@ -4,6 +4,7 @@ using Amazon.CDK;
 using Amazon.CDK.AWS.CertificateManager;
 using Amazon.CDK.AWS.Cognito;
 using Amazon.CDK.AWS.Lambda;
+using Amazon.CDK.AWS.Logs;
 using Amazon.CDK.AWS.SSM;
 using AwsStacks.Models;
 using AwsStacks.StackItems;
@@ -32,8 +33,7 @@ namespace AwsStacks.Stacks
                 },
                 CustomAttributes = new Dictionary<string, ICustomAttribute>
                 {
-                    {"legacy_id", new StringAttribute()},
-                    {"internal_id", new StringAttribute()}
+                    {"legacy_id", new StringAttribute()}
                 },
                 Mfa = Mfa.OPTIONAL,
                 MfaSecondFactor = new MfaSecondFactor
@@ -49,12 +49,13 @@ namespace AwsStacks.Stacks
                         Runtime = Runtime.DOTNET_CORE_3_1,
                         Handler = "MigrateUserTrigger::MigrateUserTrigger.Function::FunctionHandler",
                         Timeout = Duration.Seconds(5),
+                        LogRetention = RetentionDays.ONE_DAY,
                         Environment = new Dictionary<string, string>
                         {
                             {"FIREBASE_API_KEY", apiKey},
                             {"FIREBASE_CREDENTIAL", credential}
                         },
-                        MemorySize = 128
+                        MemorySize = 512
                     }),
                     
                 },
@@ -63,7 +64,21 @@ namespace AwsStacks.Stacks
                 {
                     ChallengeRequiredOnNewDevice = true,
                     DeviceOnlyRememberedOnUserPrompt = false
-                }
+                },
+                StandardAttributes = new StandardAttributes
+                {
+                    Email = new StandardAttribute
+                    {
+                        Mutable = false,
+                        Required = true
+                    },
+                    Nickname = new StandardAttribute
+                    {
+                        Mutable = true,
+                        Required = true
+                    }
+                },
+                SignInCaseSensitive = false
             });
 
             UserPool.AddClient("pkce-test-app", new UserPoolClientOptions
