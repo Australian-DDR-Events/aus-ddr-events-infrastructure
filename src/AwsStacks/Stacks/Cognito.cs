@@ -81,6 +81,19 @@ namespace AwsStacks.Stacks
                 SignInCaseSensitive = false
             });
 
+            var ausDdrEventsApi = UserPool.AddResourceServer("aus-ddr-events-api", new UserPoolResourceServerOptions
+            {
+                Identifier = "aus-ddr-events-api",
+                Scopes = new[]
+                {
+                    new ResourceServerScope(new ResourceServerScopeProps
+                    {
+                        ScopeDescription = "Read",
+                        ScopeName = "user:read"
+                    })
+                }
+            });
+            
             UserPool.AddClient("pkce-test-app", new UserPoolClientOptions
             {
                 OAuth = new OAuthSettings
@@ -88,7 +101,7 @@ namespace AwsStacks.Stacks
                     CallbackUrls = new []
                     {
                         "http://localhost:3000",
-                        "http://localhost:1234"
+                        "http://localhost:1234/callback"
                     },
                     Flows = new OAuthFlows
                     {
@@ -101,6 +114,17 @@ namespace AwsStacks.Stacks
                         "http://localhost:3000/logout",
                         "http://localhost:1234/logout"
                     },
+                    Scopes = new []
+                    {
+                        OAuthScope.ResourceServer(ausDdrEventsApi, new ResourceServerScope(new ResourceServerScopeProps
+                        {
+                            ScopeDescription = "Read",
+                            ScopeName = "user:read"
+                        })), 
+                        OAuthScope.EMAIL,
+                        OAuthScope.OPENID, 
+                        OAuthScope.PROFILE
+                    }
                 },
                 GenerateSecret = false
             });
@@ -153,19 +177,6 @@ namespace AwsStacks.Stacks
                 },
                 GenerateSecret = false
             });
-
-            var ausDdrEventsApi = UserPool.AddResourceServer("aus-ddr-events-api", new UserPoolResourceServerOptions
-            {
-                Identifier = "aus-ddr-events-api",
-                Scopes = new[]
-                {
-                    new ResourceServerScope(new ResourceServerScopeProps
-                    {
-                        ScopeDescription = "Read",
-                        ScopeName = "user:read"
-                    })
-                }
-            });
             
             var discordClient = UserPool.AddClient("aus-ddr-discord", new UserPoolClientOptions
             {
@@ -191,11 +202,23 @@ namespace AwsStacks.Stacks
 
             UserPool.AddDomain("ausddrevents", new UserPoolDomainOptions
             {
-                CustomDomain = new CustomDomainOptions
+                // CustomDomain = new CustomDomainOptions
+                // {
+                //     DomainName = props.ProjectEnvironment.cognito.domain,
+                //     Certificate = Certificate.FromCertificateArn(this, "certificate", props.ProjectEnvironment.cognito.sslCertificateArn)
+                // },
+                CognitoDomain = new CognitoDomainOptions
                 {
-                    DomainName = props.ProjectEnvironment.cognito.domain,
-                    Certificate = Certificate.FromCertificateArn(this, "certificate", props.ProjectEnvironment.cognito.sslCertificateArn)
+                    DomainPrefix = "bauxe-test"
                 }
+            });
+
+            new CfnUserPoolGroup(this, "admin-group", new CfnUserPoolGroupProps
+            {
+                Description = "AusDdrEvents Administrators",
+                GroupName = "Administrators",
+                Precedence = 1,
+                UserPoolId = UserPool.UserPoolId
             });
 
             var cfnUserPool = (CfnUserPool) UserPool.Node.DefaultChild;

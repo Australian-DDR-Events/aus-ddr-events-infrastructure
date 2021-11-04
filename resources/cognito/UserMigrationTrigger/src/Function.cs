@@ -84,7 +84,7 @@ namespace MigrateUserTrigger
                         {"email", u.email},
                         {"username", u.email},
                         {"email_verified", true},
-                        {"nickname", user.User.DisplayName},
+                        {"nickname", "nothing"},
                         {"custom:legacy_id", u.uid}
                     },
                     finalUserStatus = "RESET_REQUIRED",

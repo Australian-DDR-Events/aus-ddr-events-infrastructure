@@ -125,6 +125,12 @@ namespace AwsStacks.Stacks
                         HttpStatus = 404,
                         ResponseHttpStatus = 200,
                         ResponsePagePath = "/index.html"
+                    },
+                    new ErrorResponse
+                    {
+                        HttpStatus = 403,
+                        ResponseHttpStatus = 200,
+                        ResponsePagePath = "/index.html"
                     }
                 }
             });
@@ -134,9 +140,29 @@ namespace AwsStacks.Stacks
                 Name = $"assets-domain-name-{env}"
             });
 
+            ExportValue(assetsDistribution.DistributionId, new ExportValueOptions
+            {
+                Name = $"assets-distribution-id-{env}"
+            });
+
+            ExportValue(assetsBucket.BucketName, new ExportValueOptions
+            {
+                Name = $"assets-bucket-name-{env}"
+            });
+
             ExportValue(rootDistribution.DomainName, new ExportValueOptions
             {
                 Name = $"root-domain-name-{env}"
+            });
+
+            ExportValue(rootDistribution.DistributionId, new ExportValueOptions
+            {
+                Name = $"root-distribution-id-{env}"
+            });
+
+            ExportValue(rootBucket.BucketName, new ExportValueOptions
+            {
+                Name = $"root-bucket-name-{env}"
             });
 
             StackParameter.AddStackParameter(this, "cdn", props);
