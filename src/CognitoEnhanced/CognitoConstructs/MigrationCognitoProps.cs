@@ -4,6 +4,8 @@ using Amazon.CDK.AWS.Cognito;
 namespace CognitoEnhanced.CognitoConstructs {
     public class MigrationCognitoProps : UserPoolProps {
         public UserMigrationLambdaProps UserMigrationLambda { get; set; }
+        
+        public IList<UserClientDefinition> UserClients { get; set; }
 
         public IList<ResourceServerDefinition> ResourceServers { get; set; }
         
@@ -19,6 +21,21 @@ namespace CognitoEnhanced.CognitoConstructs {
     public class UserMigrationLambdaProps {
         public string ResourcesPath { get; set; }
         public string FirebaseApiKeyPath { get; set; }
+    }
+
+    public class UserClientDefinition
+    {
+        public string Identifier { get; set; }
+        public List<string> CallbackUrls { get; set; }
+        public List<string> LogoutUrls { get; set; }
+        public bool UseBackend { get; set; }
+        // public List<ClientResourceServerAssociation> Scopes { get; set; }
+        // public List<string> DefaultScopes { get; set; }
+    }
+    
+    public class ClientResourceServerAssociation {
+        public string ResourceServerIdentifier { get; set; }
+        public List<string> Scopes { get; set; }
     }
 
     public class ResourceServerDefinition {

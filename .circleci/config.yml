@@ -25,13 +25,18 @@ jobs:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
     resource_class: medium
     steps:
+      - run:
+          name: "Install unzip"
+          command: |
+            apt update -y
+            apt install zip unzip -y
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           aws-region: AWS_REGION
-      - attach_workspace:
-          at: ~/
       - checkout
+      - attach_workspace:
+          at: ~/aus-ddr-events-infrastructure
       - run:
           name: "Install dependencies"
           command: |
@@ -43,7 +48,9 @@ jobs:
       - run:
           name: "Execute CDK"
           command: |
-            cdk synthesize -c env="staging" --profile "staging" "dev-cognito-enhanced-stack" "dev-webapp-stack"
+            cdk synthesize -c env="${ENVIRONMENT}" "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack"
+            cdk bootstrap -c env="${ENVIRONMENT}"
+            cdk deploy -c env="${ENVIRONMENT}" --progress bar "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack"
 
 workflows:
   build_and_deploy:
@@ -52,8 +59,6 @@ workflows:
         name: build-resources-staging
         context:
         - staging
-        post-steps:
-        - jira/notify
         filters:
           branches:
             only: master
@@ -61,11 +66,11 @@ workflows:
         name: deploy-staging
         context:
         - staging
-        post-steps:
-        - jira/notify
         filters:
           branches:
             only: master
+        requires:
+          - build-resources-staging
     - block_production:
         type: approval
         requires:
@@ -73,9 +78,7 @@ workflows:
     - deploy:
         name: deploy-production
         context:
-        - prod
-        post-steps:
-        - jira/notify
+        - production
         filters:
           branches:
             only: master

@@ -1,5 +1,6 @@
 {
   "app": "dotnet run -p src/CognitoEnhanced/CognitoEnhanced.csproj",
+  "requireApproval": "never",
   "watch": {
     "include": [
       "**"
@@ -67,6 +68,19 @@
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/799fe761-c985-4392-a3c7-43c4f528b941",
         "SesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
         "EmailFromAddress": "admin@ausddrevents.com",
+        "UserClients": [
+          {
+            "Identifier": "AusDdrEventsWebApp",
+            "CallbackUrls": [
+              "https://stg.ausddrevents.com/callback"
+            ],
+            "LogoutUrls": [
+              "https://stg.ausddrevents.com",
+              "https://stg.ausddrevents.com/logout"
+            ],
+            "UseBackend": false
+          }
+        ],
         "ResourceServers": [
           {
             "Identifier": "AusDdrEventsApi",
@@ -87,6 +101,52 @@
       "cloudFrontProxy": {
         "Domain": "stg.ausddrevents.com",
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/c1de7792-64d1-4d05-b3ab-37fb606f5af2"
+      }
+    },
+    "production": {
+      "label": "production",
+      "migrationCognito": {
+        "UserMigrationLambda": {
+          "ResourcesPath": "resources_out/MigrationCognito",
+          "FirebaseApiKeyPath": "/production-cognito-enhanced-stack/migration-cognito/user-pool-trigger/firebase-api-key"
+        },
+        "Domain": "id.ausddrevents.com",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/8526eceb-4cc8-4b16-9d4e-0a47f05dc092",
+        "SesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
+        "EmailFromAddress": "admin@ausddrevents.com",
+        "UserClients": [
+          {
+            "Identifier": "AusDdrEventsWebApp",
+            "CallbackUrls": [
+              "https://ausddrevents.com/callback"
+            ],
+            "LogoutUrls": [
+              "https://ausddrevents.com",
+              "https://ausddrevents.com/logout"
+            ],
+            "UseBackend": false
+          }
+        ],
+        "ResourceServers": [
+          {
+            "Identifier": "AusDdrEventsApi",
+            "Scopes": [
+            ]
+          }
+        ],
+        "UserPoolGroups": [
+          {
+            "Description": "Aus DDR Events Administrators",
+            "GroupName": "Administrators"
+          }
+        ]
+      },
+      "appBucket": {
+        "App": ""
+      },
+      "cloudFrontProxy": {
+        "Domain": "ausddrevents.com",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/5acb001b-3306-4f7f-a521-813be99c3bf9"
       }
     }
   }

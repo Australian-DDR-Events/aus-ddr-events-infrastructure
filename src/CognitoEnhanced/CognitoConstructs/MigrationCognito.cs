@@ -38,6 +38,15 @@ namespace CognitoEnhanced.CognitoConstructs {
                 UserPool.AddResourceServer(identifier, resourceServerOptions);
             }
 
+            var userClients = props
+                .UserClients
+                .Select(CreateClient)
+                .Select(cl => new Tuple<string, UserPoolClientOptions>(cl.UserPoolClientName, cl));
+            foreach (var (identifier, clientOptions) in userClients)
+            {
+                UserPool.AddClient(identifier, clientOptions);
+            }
+
             var domain = new UserPoolDomainOptions() {
                 CustomDomain = new CustomDomainOptions() {
                     DomainName = props.Domain,
@@ -46,6 +55,7 @@ namespace CognitoEnhanced.CognitoConstructs {
             };
             UserPool.AddDomain("user-pool-domain-association", domain);
             
+            PerformUnsafeOperations(props);
             
 
             // var userPoolDomain = new UserPoolDomain(this, "user-pool-domain", new UserPoolDomainProps {
@@ -144,6 +154,32 @@ namespace CognitoEnhanced.CognitoConstructs {
                     ScopeDescription = s.Description,
                     ScopeName = s.Name,
                 })).ToArray()
+            };
+        }
+
+        private UserPoolClientOptions CreateClient(UserClientDefinition client)
+        {
+            return new UserPoolClientOptions()
+            {
+                UserPoolClientName = client.Identifier,
+                OAuth = new OAuthSettings
+                {
+                    CallbackUrls = client.CallbackUrls.ToArray(),
+                    Flows = new OAuthFlows
+                    {
+                        ClientCredentials = false,
+                        AuthorizationCodeGrant = true,
+                        ImplicitCodeGrant = false
+                    },
+                    LogoutUrls = client.LogoutUrls.ToArray(),
+                    Scopes = new[]
+                    {
+                        OAuthScope.OPENID,
+                        OAuthScope.EMAIL,
+                        OAuthScope.PROFILE
+                    }
+                },
+                GenerateSecret = client.UseBackend
             };
         }
 
