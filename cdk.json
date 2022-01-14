@@ -1,85 +1,92 @@
 {
-  "app": "dotnet run -p src/AwsStacks/AwsStacks.csproj",
+  "app": "dotnet run -p src/CognitoEnhanced/CognitoEnhanced.csproj",
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "src/*/obj",
+      "src/*/bin",
+      "src/*.sln",
+      "src/*/GlobalSuppressions.cs",
+      "src/*/*.csproj"
+    ]
+  },
   "context": {
     "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
-    "@aws-cdk/core:enableStackNameDuplicates": "true",
-    "aws-cdk:enableDiffNoFail": "true",
-    "@aws-cdk/core:stackRelativeExports": "true",
-    "@aws-cdk/aws-ecr-assets:dockerIgnoreSupport": true,
-    "@aws-cdk/aws-secretsmanager:parseOwnedSecretName": true,
-    "@aws-cdk/aws-kms:defaultKeyPolicies": true,
-    "@aws-cdk/aws-s3:grantWriteWithoutAcl": true,
-    "@aws-cdk/aws-ecs-patterns:removeDefaultDesiredCount": true,
+    "@aws-cdk/core:stackRelativeExports": true,
     "@aws-cdk/aws-rds:lowercaseDbIdentifier": true,
-    "@aws-cdk/aws-efs:defaultEncryptionAtRest": true,
     "@aws-cdk/aws-lambda:recognizeVersionProps": true,
     "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
-    "template": {
-      "env": "template",
-      "resourcesPath": "{DIRECTORY FOR LAMBDA BUILD ARTIFACT OUTPUT}",
-      "cognito": {
-        "ssmPrefix": "{SSM PATH FOR LAMBDA ENVIRONMENT}",
-        "sesArn": "{SES ARN}",
-        "emailFromAddress": "{ADDRESS TO SEND EMAILS FROM}",
-        "sslCertificateArn": "{Cognito SSL certificate ARN}",
-        "domain": "{CUSTOM DOMAIN TO USE WITH COGNITO"
+    "dev": {
+      "label": "dev",
+      "migrationCognito": {
+        "UserMigrationLambda": {
+          "ResourcesPath": "resources_out/MigrationCognito",
+          "FirebaseApiKeyPath": "/dev-cognito-enhanced-stack/migration-cognito/user-pool-trigger/firebase-api-key",
+          "FirebaseCredentialPath": "/dev-cognito-enhanced-stack/migration-cognito/user-pool-trigger/firebase-credential"
+        },
+        "Domain": "dev.auth.chris-sg.dev",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/6e988218-9246-493f-b411-0144dbc7a8a1",
+        "SesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
+        "EmailFromAddress": "admin@ausddrevents.com",
+        "ResourceServers": [
+          {
+            "Identifier": "TestAPI",
+            "Scopes": [
+              {
+                "Description": "A test scope",
+                "Name": "Test"
+              }
+            ]
+          }
+        ],
+        "UserPoolGroups": [
+          {
+            "Description": "Aus DDR Events Administrators",
+            "GroupName": "Administrators"
+
+          }
+        ]
       },
-      "cdn": {
-        "assetsCertificateArn": "{ASSETS URL CERTIFICATE ARN}",
-        "assetsDomainName": "{ASSETS DOMAIN FOR CERTIFICATE}",
-        "rootCertificateArn": "{ROOT URL CERTIFICATE ARN}",
-        "rootDomainName": "{ROOT DOMAIN FOR CERTIFICATE}"
-      }
-    },
-    "bauxe": {
-      "env": "bauxe",
-      "resourcesPath": "/Users/Christopher.ShandGost/git/AwsStacks/resources_out",
-      "cognito": {
-        "ssmPrefix": "/ausddrevents/cognito/",
-        "sesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
-        "emailFromAddress": "Aus DDR Events <admin@ausddrevents.com>",
-        "sslCertificateArn": "arn:aws:acm:us-east-1:786677109833:certificate/490d6549-11b5-4055-ad43-1f1e2003628d",
-        "domain": "login.ausddrevents.com"
-      },
-      "cdn": {
-        "assetsCertificateArn": "arn:aws:acm:us-east-1:786677109833:certificate/74c0ad14-9d58-42b6-a50f-c771047a05a3",
-        "assetsDomainName": "assets.ddrevents.chris-sg.dev",
-        "rootCertificateArn": "arn:aws:acm:us-east-1:786677109833:certificate/04ac8647-66c3-406a-b950-8c51289800fe",
-        "rootDomainName": "ddrevents.chris-sg.dev"
+      "cloudFrontProxy": {
+        "Domain": "dev.ddr.chris-sg.dev",
+        "SslArn": ""
       }
     },
     "staging": {
-      "env": "staging",
-      "resourcesPath": "/Users/Christopher.ShandGost/git/AwsStacks/resources_out",
-      "cognito": {
-        "ssmPrefix": "/ausddrevents/cognito/",
-        "sesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
-        "emailFromAddress": "Aus DDR Events <admin@ausddrevents.com>",
-        "sslCertificateArn": "arn:aws:acm:us-east-1:786677109833:certificate/490d6549-11b5-4055-ad43-1f1e2003628d",
-        "domain": "login.ausddrevents.com"
+      "label": "staging",
+      "migrationCognito": {
+        "UserMigrationLambda": {
+          "ResourcesPath": "resources_out/MigrationCognito",
+          "FirebaseApiKeyPath": "/staging-cognito-enhanced-stack/migration-cognito/user-pool-trigger/firebase-api-key"
+        },
+        "Domain": "stg.id.ausddrevents.com",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/799fe761-c985-4392-a3c7-43c4f528b941",
+        "SesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
+        "EmailFromAddress": "admin@ausddrevents.com",
+        "ResourceServers": [
+          {
+            "Identifier": "AusDdrEventsApi",
+            "Scopes": [
+            ]
+          }
+        ],
+        "UserPoolGroups": [
+          {
+            "Description": "Aus DDR Events Administrators",
+            "GroupName": "Administrators"
+          }
+        ]
       },
-      "cdn": {
-        "assetsCertificateArn": "arn:aws:acm:us-east-1:786677109833:certificate/b66d0b5b-d709-431e-ab9b-c457d3fc029a",
-        "assetsDomainName": "stg.a.ausddrevents.com",
-        "rootCertificateArn": "arn:aws:acm:us-east-1:786677109833:certificate/c1de7792-64d1-4d05-b3ab-37fb606f5af2",
-        "rootDomainName": "stg.ausddrevents.com"
-      }
-    },
-    "prod": {
-      "env": "prod",
-      "resourcesPath": "/Users/Christopher.ShandGost/git/AwsStacks/resources_out",
-      "cognito": {
-        "ssmPrefix": "/ausddrevents/cognito/",
-        "sesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
-        "emailFromAddress": "Aus DDR Events <admin@ausddrevents.com>",
-        "sslCertificateArn": "arn:aws:acm:us-east-1:786677109833:certificate/490d6549-11b5-4055-ad43-1f1e2003628d",
-        "domain": "login.ausddrevents.com"
+      "appBucket": {
+        "App": ""
       },
-      "cdn": {
-        "assetsCertificateArn": "arn:aws:acm:us-east-1:786677109833:certificate/1769e856-b285-4df8-9f5f-76022ba127cc",
-        "assetsDomainName": "assets.ausddrevents.com",
-        "rootCertificateArn": "arn:aws:acm:us-east-1:786677109833:certificate/5acb001b-3306-4f7f-a521-813be99c3bf9",
-        "rootDomainName": "ausddrevents.com"
+      "cloudFrontProxy": {
+        "Domain": "stg.ausddrevents.com",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/c1de7792-64d1-4d05-b3ab-37fb606f5af2"
       }
     }
   }

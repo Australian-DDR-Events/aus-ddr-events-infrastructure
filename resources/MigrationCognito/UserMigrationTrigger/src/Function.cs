@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
+using Amazon.DynamoDBv2;
 using Firebase.Auth;
+using Amazon.DynamoDBv2.Model;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -13,11 +15,14 @@ namespace MigrateUserTrigger
 {
     public class Function
     {
+        #nullable enable
         private FirebaseAuthProvider? provider;
+        #nullable restore
         
         public async Task<CognitoEvent> FunctionHandler(CognitoEvent migrateUserEvent, ILambdaContext context)
         {
             Console.WriteLine($"Started auth check for user {migrateUserEvent.userName}");
+
             migrateUserEvent.response = migrateUserEvent.triggerSource switch
             {
                 "UserMigration_Authentication" => await AuthenticationHandler(migrateUserEvent.userName, migrateUserEvent.request),
@@ -68,24 +73,30 @@ namespace MigrateUserTrigger
 
         private async Task<MigrateUserResponse> ForgotPasswordHandler(string userName)
         {
-            var users = new List<User>()
-            {
+            var config = new AmazonDynamoDBConfig();
+            var client = new AmazonDynamoDBClient(config);
 
+            var attribute = new AttributeValue(userName);
+            var item = new Dictionary<string, AttributeValue>() {
+                { "email", attribute}
             };
+            
+            var result = await client.GetItemAsync(Environment.GetEnvironmentVariable("USER_TABLE_NAME"), item);
 
-            var u = users.FirstOrDefault(u => u.email.Equals(userName, StringComparison.OrdinalIgnoreCase));
+            var email = result.Item["email"].S;
+            var uid = result.Item["uid"].S;
 
-            if (u != null)
+            if (result.IsItemSet)
             {
                 return new MigrateUserResponse
                 {
                     userAttributes = new Dictionary<string, object>
                     {
-                        {"email", u.email},
-                        {"username", u.email},
+                        {"email", email},
+                        {"username", email},
                         {"email_verified", true},
                         {"nickname", "nothing"},
-                        {"custom:legacy_id", u.uid}
+                        {"custom:legacy_id", uid}
                     },
                     finalUserStatus = "RESET_REQUIRED",
                     messageAction = "SUPPRESS",

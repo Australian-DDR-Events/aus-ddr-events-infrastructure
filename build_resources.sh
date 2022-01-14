@@ -1,3 +1,5 @@
+
+   
 #/bin/bash
 
 function build_stack_lambdas()
@@ -22,7 +24,7 @@ function build_stack_lambdas()
 
 mkdir -p resources_out
 
-stacks=("cognito")
+stacks=("MigrationCognito")
 
 for stack in ${stacks[@]}; do
   build_stack_lambdas $stack
