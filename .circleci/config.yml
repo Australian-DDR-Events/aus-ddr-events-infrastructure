@@ -12,9 +12,9 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-        name: "Build resources"
-        command: |
-          ./build_resources.sh
+          name: "Build resources"
+          command: |
+            ./build_resources.sh
       - persist_to_workspace:
           root: ~/aus-ddr-events-infrastructure
           paths:
@@ -33,42 +33,51 @@ jobs:
           at: ~/
       - checkout
       - run:
-        name: "Install dependencies"
-        command: |
-          dotnet restore ./src/CognitoEnhanced.sln
-          apt update -y
-          apt install nodejs npm -y
-          npm install -g npm@latest
-          npm install -g aws-cdk
+          name: "Install dependencies"
+          command: |
+            dotnet restore ./src/CognitoEnhanced.sln
+            apt update -y
+            apt install nodejs npm -y
+            npm install -g npm@latest
+            npm install -g aws-cdk
       - run:
-        name: "Execute CDK"
-        command: |
-          cdk synthesize -c env="staging" --profile "staging" "dev-cognito-enhanced-stack" "dev-webapp-stack"
+          name: "Execute CDK"
+          command: |
+            cdk synthesize -c env="staging" --profile "staging" "dev-cognito-enhanced-stack" "dev-webapp-stack"
 
 workflows:
   build_and_deploy:
     jobs:
-      - deploy:
-          name: deploy-staging
-          context:
-            - staging
-          post-steps:
-            - jira/notify
-          filters:
-            branches:
-              only: master
-      - block_production:
-          type: approval
-          requires:
-            - deploy-staging
-      - deploy:
-          name: deploy-production
-          context:
-            - prod
-          post-steps:
-            - jira/notify
-          filters:
-            branches:
-              only: master
-          requires:
-            - block_production
+    - build_resources:
+        name: build-resources-staging
+        context:
+        - staging
+        post-steps:
+        - jira/notify
+        filters:
+          branches:
+            only: master
+    - deploy:
+        name: deploy-staging
+        context:
+        - staging
+        post-steps:
+        - jira/notify
+        filters:
+          branches:
+            only: master
+    - block_production:
+        type: approval
+        requires:
+          - deploy-staging
+    - deploy:
+        name: deploy-production
+        context:
+        - prod
+        post-steps:
+        - jira/notify
+        filters:
+          branches:
+            only: master
+        requires:
+        - block_production
