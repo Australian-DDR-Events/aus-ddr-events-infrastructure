@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
 using Amazon.CDK.AWS.Route53.Targets;
 using Amazon.CDK.AWS.SSM;
+using Amazon.CDK.AWS.StepFunctions;
 using Constructs;
 using Attribute = Amazon.CDK.AWS.DynamoDB.Attribute;
 
@@ -29,22 +31,24 @@ namespace CognitoEnhanced.CognitoConstructs {
                 CreateGroup(userPoolGroupDefinition, precedence, UserPool.UserPoolId);
             }
 
-            var resourceServers = props
+            IDictionary<string, Tuple<UserPoolResourceServer, UserPoolResourceServerOptions>> resourceServers = new Dictionary<string, Tuple<UserPoolResourceServer, UserPoolResourceServerOptions>>();
+            var resourceServerOptionEnumerable = props
                 .ResourceServers
                 .Select(CreateResourceServer)
                 .Select(rs => new Tuple<string, UserPoolResourceServerOptions>(rs.Identifier, rs));
-            foreach (var (identifier, resourceServerOptions) in resourceServers)
+            foreach (var (identifier, resourceServerOptions) in resourceServerOptionEnumerable)
             {
-                UserPool.AddResourceServer(identifier, resourceServerOptions);
+                var resourceServer =UserPool.AddResourceServer(identifier, resourceServerOptions);
+                resourceServers.Add(identifier, new Tuple<UserPoolResourceServer, UserPoolResourceServerOptions>(resourceServer, resourceServerOptions));
             }
 
             var userClients = props
                 .UserClients
-                .Select(CreateClient)
+                .Select(c => CreateClient(c, resourceServers))
                 .Select(cl => new Tuple<string, UserPoolClientOptions>(cl.UserPoolClientName, cl));
             foreach (var (identifier, clientOptions) in userClients)
             {
-                UserPool.AddClient(identifier, clientOptions);
+                var c  = UserPool.AddClient(identifier, clientOptions);
             }
 
             var domain = new UserPoolDomainOptions() {
@@ -56,7 +60,7 @@ namespace CognitoEnhanced.CognitoConstructs {
             UserPool.AddDomain("user-pool-domain-association", domain);
             
             PerformUnsafeOperations(props);
-            
+
 
             // var userPoolDomain = new UserPoolDomain(this, "user-pool-domain", new UserPoolDomainProps {
             //     UserPool = userPool,
@@ -157,8 +161,22 @@ namespace CognitoEnhanced.CognitoConstructs {
             };
         }
 
-        private UserPoolClientOptions CreateClient(UserClientDefinition client)
+        private UserPoolClientOptions CreateClient(UserClientDefinition client, IDictionary<string, Tuple<UserPoolResourceServer, UserPoolResourceServerOptions>> resourceServers)
         {
+            // var scopes = client.Scopes.Select(s =>
+            //     {
+            //         var (userPoolResourceServer, userPoolResourceServerOptions) =
+            //             resourceServers[s.ResourceServerIdentifier];
+            //
+            //         return s.Scopes.Select(scopeName =>
+            //             OAuthScope.ResourceServer(userPoolResourceServer,
+            //                 userPoolResourceServerOptions.Scopes.First(rss => rss.ScopeName.Equals(scopeName))));
+            //     }).SelectMany(x => x)
+            //     .ToList();
+            //
+            var scopes = new List<OAuthScope>();
+            scopes.AddRange(new List<OAuthScope>(){OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE});
+
             return new UserPoolClientOptions()
             {
                 UserPoolClientName = client.Identifier,
@@ -172,12 +190,7 @@ namespace CognitoEnhanced.CognitoConstructs {
                         ImplicitCodeGrant = false
                     },
                     LogoutUrls = client.LogoutUrls.ToArray(),
-                    Scopes = new[]
-                    {
-                        OAuthScope.OPENID,
-                        OAuthScope.EMAIL,
-                        OAuthScope.PROFILE
-                    }
+                    Scopes = scopes.ToArray()
                 },
                 GenerateSecret = client.UseBackend
             };
@@ -203,6 +216,7 @@ namespace CognitoEnhanced.CognitoConstructs {
                 EmailSendingAccount = "DEVELOPER",
                 From = props.EmailFromAddress
             };
+            
         }
     }
 }

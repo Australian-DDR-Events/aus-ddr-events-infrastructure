@@ -26,13 +26,31 @@
       "migrationCognito": {
         "UserMigrationLambda": {
           "ResourcesPath": "resources_out/MigrationCognito",
-          "FirebaseApiKeyPath": "/dev-cognito-enhanced-stack/migration-cognito/user-pool-trigger/firebase-api-key",
-          "FirebaseCredentialPath": "/dev-cognito-enhanced-stack/migration-cognito/user-pool-trigger/firebase-credential"
+          "FirebaseApiKeyPath": "/dev-cognito-enhanced-stack/migration-cognito/user-pool-trigger/firebase-api-key"
         },
-        "Domain": "dev.auth.chris-sg.dev",
-        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/6e988218-9246-493f-b411-0144dbc7a8a1",
+        "Domain": "id.chris-sg.dev",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/330d096b-585d-48c1-9931-422eb9b072a7",
         "SesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
         "EmailFromAddress": "admin@ausddrevents.com",
+        "UserClients": [
+          {
+            "Identifier": "AusDdrEventsWebApp",
+            "CallbackUrls": [
+              "http://localhost:1234/callback"
+            ],
+            "LogoutUrls": [
+              "http://localhost:1234/",
+              "http://localhost:1234/logout"
+            ],
+            "UseBackend": false,
+            "Scopes": [
+              {
+                "ResourceServerIdentifier": "AusDdrEventsApi",
+                "Scopes": []
+              }
+            ]
+          }
+        ],
         "ResourceServers": [
           {
             "Identifier": "TestAPI",
@@ -41,6 +59,11 @@
                 "Description": "A test scope",
                 "Name": "Test"
               }
+            ]
+          },
+          {
+            "Identifier": "AusDdrEventsApi",
+            "Scopes": [
             ]
           }
         ],
@@ -52,9 +75,12 @@
           }
         ]
       },
+      "appBucket": {
+        "App": ""
+      },
       "cloudFrontProxy": {
-        "Domain": "dev.ddr.chris-sg.dev",
-        "SslArn": ""
+        "Domain": "ddr.chris-sg.dev",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/f12a7454-bbbc-440f-ae23-7f472b10b0b1"
       }
     },
     "staging": {
@@ -78,7 +104,13 @@
               "https://stg.ausddrevents.com",
               "https://stg.ausddrevents.com/logout"
             ],
-            "UseBackend": false
+            "UseBackend": false,
+            "Scopes": [
+              {
+                "ResourceServerIdentifier": "AusDdrEventsApi",
+                "Scopes": []
+              }
+            ]
           }
         ],
         "ResourceServers": [
@@ -124,7 +156,13 @@
               "https://ausddrevents.com",
               "https://ausddrevents.com/logout"
             ],
-            "UseBackend": false
+            "UseBackend": false,
+            "Scopes": [
+              {
+                "ResourceServerIdentifier": "AusDdrEventsApi",
+                "Scopes": []
+              }
+            ]
           }
         ],
         "ResourceServers": [

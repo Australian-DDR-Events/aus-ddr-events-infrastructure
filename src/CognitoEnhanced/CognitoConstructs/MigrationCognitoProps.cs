@@ -29,7 +29,7 @@ namespace CognitoEnhanced.CognitoConstructs {
         public List<string> CallbackUrls { get; set; }
         public List<string> LogoutUrls { get; set; }
         public bool UseBackend { get; set; }
-        // public List<ClientResourceServerAssociation> Scopes { get; set; }
+        public List<ClientResourceServerAssociation> Scopes { get; set; }
         // public List<string> DefaultScopes { get; set; }
     }
     
