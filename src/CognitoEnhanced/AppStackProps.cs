@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Amazon.CDK;
 using CognitoEnhanced.CognitoConstructs;
+using CognitoEnhanced.EC2AppConstructs;
 using CognitoEnhanced.S3WebAppConstructs;
 
 namespace CognitoEnhanced {
@@ -11,6 +12,7 @@ namespace CognitoEnhanced {
         public MigrationCognitoProps migrationCognito { get; set; }
         public AppBucketProps appBucket { get; set; }
         public CloudFrontProxyProps cloudFrontProxy { get; set; }
+        public HostedEC2AppProps hostedEC2AppProps { get; set; }
 
         public static AppStackProps GetObject(Dictionary<string, object> dict)
         {

@@ -21,6 +21,7 @@ namespace CognitoEnhanced
 
             new CognitoEnhancedStack(app, $"{env}-cognito-enhanced-stack", appProps);
             new S3WebApp(app, $"{env}-webapp-stack", appProps);
+            new EC2App(app, $"{env}-ec2app-stack", appProps);
             app.Synth();
         }
     }

@@ -81,6 +81,15 @@
       "cloudFrontProxy": {
         "Domain": "ddr.chris-sg.dev",
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/f12a7454-bbbc-440f-ae23-7f472b10b0b1"
+      },
+      "hostedEC2AppProps": {
+        "AvailabilityZones": [
+          "ap-southeast-2a",
+          "ap-southeast-2b",
+          "ap-southeast-2c"
+        ],
+        "SshKeyName": "aus-ddr-api-key",
+        "UserDataPath": "ops/ec2-startup.sh"
       }
     },
     "staging": {
@@ -133,6 +142,15 @@
       "cloudFrontProxy": {
         "Domain": "stg.ausddrevents.com",
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/c1de7792-64d1-4d05-b3ab-37fb606f5af2"
+      },
+      "hostedEC2AppProps": {
+        "AvailabilityZones": [
+          "ap-southeast-2a",
+          "ap-southeast-2b",
+          "ap-southeast-2c"
+        ],
+        "SshKeyName": "aus-ddr-api-key",
+        "UserDataPath": "ops/ec2-startup.sh"
       }
     },
     "production": {
@@ -185,6 +203,15 @@
       "cloudFrontProxy": {
         "Domain": "ausddrevents.com",
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/5acb001b-3306-4f7f-a521-813be99c3bf9"
+      },
+      "hostedEC2AppProps": {
+        "AvailabilityZones": [
+          "ap-southeast-2a",
+          "ap-southeast-2b",
+          "ap-southeast-2c"
+        ],
+        "SshKeyName": "aus-ddr-api-key",
+        "UserDataPath": "ops/ec2-startup.sh"
       }
     }
   }
