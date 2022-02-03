@@ -40,6 +40,8 @@ Restart=always
 RestartSec=15
 User=ec2-user
 ExecStart=/home/ec2-user/dotnet6/dotnet /home/ec2-user/aus-ddr-api/AusDdrApi.Api.dll
+Environment=ASPNETCORE_ENVIRONMENT=staging
+Environment=ASPNETCORE_URLS=http://0.0.0.0:5000;https://0.0.0.0:5001
 
 [Install]
 WantedBy=multi-user.target

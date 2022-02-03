@@ -29,6 +29,7 @@ namespace CognitoEnhanced.EC2AppConstructs {
                     CachedMethods = CachedMethods.CACHE_GET_HEAD_OPTIONS,
                     Compress = true,
                     CachePolicy = CachePolicy.CACHING_DISABLED,
+                    OriginRequestPolicy = OriginRequestPolicy.ALL_VIEWER
                 },
                 Certificate = Certificate.FromCertificateArn(this, "ec2app-domain-certificate", props.SslArn),
                 DomainNames = new []{props.Domain},
