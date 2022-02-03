@@ -57,6 +57,12 @@ namespace CognitoEnhanced.EC2AppConstructs
             
             securityGroup.AddIngressRule(Peer.AnyIpv4(), Port.Tcp(443), "HTTPS traffic for ipv4 addresses");
             securityGroup.AddIngressRule(Peer.AnyIpv6(), Port.Tcp(443), "HTTPS traffic for ipv6 addresses");
+            
+            securityGroup.AddIngressRule(Peer.AnyIpv4(), Port.Tcp(5000), "HTTP API traffic for ipv4 addresses");
+            securityGroup.AddIngressRule(Peer.AnyIpv6(), Port.Tcp(5000), "HTTP API traffic for ipv6 addresses");
+            
+            securityGroup.AddIngressRule(Peer.AnyIpv4(), Port.Tcp(5001), "HTTPS API traffic for ipv4 addresses");
+            securityGroup.AddIngressRule(Peer.AnyIpv6(), Port.Tcp(5001), "HTTPS API traffic for ipv6 addresses");
 
             return securityGroup;
         }

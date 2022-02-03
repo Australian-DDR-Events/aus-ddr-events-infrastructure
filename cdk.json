@@ -90,6 +90,10 @@
         ],
         "SshKeyName": "aus-ddr-api-key",
         "UserDataPath": "ops/ec2-startup.sh"
+      },
+      "ec2AppCloudFrontProxyProps": {
+        "Domain": "ddr.api.chris-sg.dev",
+        "SslArn": ""
       }
     },
     "staging": {
@@ -151,6 +155,10 @@
         ],
         "SshKeyName": "aus-ddr-api-key",
         "UserDataPath": "ops/ec2-startup.sh"
+      },
+      "ec2AppCloudFrontProxyProps": {
+        "Domain": "stg.api.ausddrevents.com",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/12f92e69-65ab-4f02-9ab5-8b3ac5d906fd"
       }
     },
     "production": {
@@ -212,6 +220,10 @@
         ],
         "SshKeyName": "aus-ddr-api-key",
         "UserDataPath": "ops/ec2-startup.sh"
+      },
+      "ec2AppCloudFrontProxyProps": {
+        "Domain": "api.ausddrevents.com",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/88b07350-9e06-4979-abdd-bc35cd091c89"
       }
     }
   }

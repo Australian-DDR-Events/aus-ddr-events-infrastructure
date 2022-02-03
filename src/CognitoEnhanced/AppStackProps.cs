@@ -13,6 +13,7 @@ namespace CognitoEnhanced {
         public AppBucketProps appBucket { get; set; }
         public CloudFrontProxyProps cloudFrontProxy { get; set; }
         public HostedEC2AppProps hostedEC2AppProps { get; set; }
+        public EC2AppCloudFrontProxyProps ec2AppCloudFrontProxyProps { get; set; }
 
         public static AppStackProps GetObject(Dictionary<string, object> dict)
         {
