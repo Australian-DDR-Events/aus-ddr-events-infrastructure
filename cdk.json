@@ -148,7 +148,9 @@
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/c1de7792-64d1-4d05-b3ab-37fb606f5af2"
       },
       "cdnBucket": {
-        "App": ""
+        "CorsOrigins": [
+          "https://stg.ausddrevents.com"
+        ]
       },
       "cdnProxy": {
         "Domain": "stg.assets.ausddrevents.com",
@@ -220,7 +222,9 @@
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/5acb001b-3306-4f7f-a521-813be99c3bf9"
       },
       "cdnBucket": {
-        "App": ""
+        "CorsOrigins": [
+          "https://ausddrevents.com"
+        ]
       },
       "cdnProxy": {
         "Domain": "assets.ausddrevents.com",

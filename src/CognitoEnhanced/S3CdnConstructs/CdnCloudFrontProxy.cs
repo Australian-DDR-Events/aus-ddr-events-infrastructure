@@ -27,7 +27,6 @@ namespace CognitoEnhanced.S3CdnConstructs {
                         EnableAcceptEncodingBrotli = true,
                         EnableAcceptEncodingGzip = true
                     }),
-                    OriginRequestPolicy = OriginRequestPolicy.CORS_S3_ORIGIN
                 },
                 Certificate = Certificate.FromCertificateArn(this, "cdn-domain-certificate", props.SslArn),
                 DomainNames = new []{props.Domain},
