@@ -48,9 +48,9 @@ jobs:
       - run:
           name: "Execute CDK"
           command: |
-            cdk synthesize -c env="${ENVIRONMENT}" "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack" "${ENVIRONMENT}-ec2app-stack"
+            cdk synthesize -c env="${ENVIRONMENT}" "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack"  "${ENVIRONMENT}-cdn-stack" "${ENVIRONMENT}-ec2app-stack"
             cdk bootstrap -c env="${ENVIRONMENT}"
-            cdk deploy -c env="${ENVIRONMENT}" --progress bar "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack" "${ENVIRONMENT}-ec2app-stack"
+            cdk deploy -c env="${ENVIRONMENT}" --progress bar "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack" "${ENVIRONMENT}-cdn-stack" "${ENVIRONMENT}-ec2app-stack"
 
 workflows:
   build_and_deploy:

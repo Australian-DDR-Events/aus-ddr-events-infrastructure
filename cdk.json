@@ -147,6 +147,13 @@
         "Domain": "stg.ausddrevents.com",
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/c1de7792-64d1-4d05-b3ab-37fb606f5af2"
       },
+      "cdnBucket": {
+        "App": ""
+      },
+      "cdnProxy": {
+        "Domain": "stg.assets.ausddrevents.com",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/f74dcc57-271a-4ffd-bd25-d9573f88c16c"
+      },
       "hostedEC2AppProps": {
         "AvailabilityZones": [
           "ap-southeast-2a",
@@ -211,6 +218,13 @@
       "cloudFrontProxy": {
         "Domain": "ausddrevents.com",
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/5acb001b-3306-4f7f-a521-813be99c3bf9"
+      },
+      "cdnBucket": {
+        "App": ""
+      },
+      "cdnProxy": {
+        "Domain": "assets.ausddrevents.com",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/1769e856-b285-4df8-9f5f-76022ba127cc"
       },
       "hostedEC2AppProps": {
         "AvailabilityZones": [
