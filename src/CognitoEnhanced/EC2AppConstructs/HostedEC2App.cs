@@ -10,12 +10,13 @@ namespace CognitoEnhanced.EC2AppConstructs
     public class HostedEC2App : Construct
     {
         public Instance_ instance { get; private set; }
+        public Role iamRole { get; private set; }
         public HostedEC2App(Construct scope, string id, HostedEC2AppProps props) : base(scope, id)
         {
             var vpc = CreateVpc();
             var securityGroup = CreateSecurityGroup(vpc);
-            var role = CreateIamRole();
-            this.instance = CreateInstance(props, vpc, securityGroup, role);
+            this.iamRole = CreateIamRole();
+            this.instance = CreateInstance(props, vpc, securityGroup, this.iamRole);
             
             var userData = File.ReadAllText(props.UserDataPath, Encoding.UTF8);
             this.instance.AddUserData(userData);
