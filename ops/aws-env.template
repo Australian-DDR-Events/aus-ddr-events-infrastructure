@@ -1,0 +1,8 @@
+api-config/AuthScheme=
+api-config/AwsConfiguration/AssetsBucketName=
+api-config/AwsConfiguration/Region=
+api-config/ConnectionStrings/DatabaseContext=
+api-config/FileStorage=
+api-config/oauth2identity/Audience=
+api-config/oauth2identity/Issuer=
+api-config/oauth2identity/UserInfoEndpoint=
