@@ -12,8 +12,7 @@ function update_ssm_entry()
 }
 
 while read line; do
-    IFS='=' read -r -a array <<< $line
-    key="/$env/${array[0]}"
-    value="${array[1]}"
+    key="/${env}/$( cut -d '=' -f 1 <<< "$line" )"
+    value="$( cut -d '=' -f 2- <<< "$line" )"
     update_ssm_entry $key $value
 done <aws-env.env
