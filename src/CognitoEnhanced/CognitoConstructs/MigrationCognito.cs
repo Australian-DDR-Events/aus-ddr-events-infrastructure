@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +10,6 @@ using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
 using Amazon.CDK.AWS.Route53.Targets;
 using Amazon.CDK.AWS.SSM;
-using Amazon.CDK.AWS.StepFunctions;
 using Constructs;
 using Attribute = Amazon.CDK.AWS.DynamoDB.Attribute;
 
@@ -48,7 +46,15 @@ namespace CognitoEnhanced.CognitoConstructs {
                 .Select(cl => new Tuple<string, UserPoolClientOptions>(cl.UserPoolClientName, cl));
             foreach (var (identifier, clientOptions) in userClients)
             {
-                var c  = UserPool.AddClient(identifier, clientOptions);
+                UserPool.AddClient(identifier, clientOptions);
+            }
+            var serviceClients = props
+                .ServiceClients
+                .Select(c => CreateServiceClient(c, resourceServers))
+                .Select(cl => new Tuple<string, UserPoolClientOptions>(cl.UserPoolClientName, cl));
+            foreach (var (identifier, clientOptions) in serviceClients)
+            {
+                UserPool.AddClient(identifier, clientOptions);
             }
 
             var domain = new UserPoolDomainOptions() {
@@ -193,6 +199,35 @@ namespace CognitoEnhanced.CognitoConstructs {
                     Scopes = scopes.ToArray()
                 },
                 GenerateSecret = client.UseBackend
+            };
+        }
+
+        private UserPoolClientOptions CreateServiceClient(ServiceClientDefinition client,
+            IDictionary<string, Tuple<UserPoolResourceServer, UserPoolResourceServerOptions>> resourceServers)
+        {
+            var scopes = client
+                .Scopes
+                .Select(s => 
+                    s.Scopes.Where(ss =>
+                            (resourceServers.FirstOrDefault(r => r.Key.Equals(s.ResourceServerIdentifier)).Value.Item2.Scopes ?? Array.Empty<ResourceServerScope>())
+                            .Any(rss => rss.ScopeName.Equals(ss))
+                        ).Select(ss => $"{s.ResourceServerIdentifier}/{ss}")
+                )
+                .SelectMany(s => s);
+            return new UserPoolClientOptions()
+            {
+                UserPoolClientName = client.Identifier,
+                OAuth = new OAuthSettings()
+                {
+                    Flows = new OAuthFlows()
+                    {
+                        ClientCredentials = true,
+                        AuthorizationCodeGrant = false,
+                        ImplicitCodeGrant = false
+                    },
+                    Scopes = scopes.Select(OAuthScope.Custom).ToArray()
+                },
+                GenerateSecret = true
             };
         }
 

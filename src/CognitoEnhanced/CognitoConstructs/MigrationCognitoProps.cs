@@ -6,6 +6,8 @@ namespace CognitoEnhanced.CognitoConstructs {
         public UserMigrationLambdaProps UserMigrationLambda { get; set; }
         
         public IList<UserClientDefinition> UserClients { get; set; }
+        
+        public IList<ServiceClientDefinition> ServiceClients { get; set; }
 
         public IList<ResourceServerDefinition> ResourceServers { get; set; }
         
@@ -31,6 +33,12 @@ namespace CognitoEnhanced.CognitoConstructs {
         public bool UseBackend { get; set; }
         public List<ClientResourceServerAssociation> Scopes { get; set; }
         // public List<string> DefaultScopes { get; set; }
+    }
+
+    public class ServiceClientDefinition
+    {
+        public string Identifier { get; set; }
+        public List<ClientResourceServerAssociation> Scopes { get; set; }
     }
     
     public class ClientResourceServerAssociation {

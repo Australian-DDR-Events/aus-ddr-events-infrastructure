@@ -51,6 +51,21 @@
             ]
           }
         ],
+        "ServiceClients": [
+          {
+            "Identifier": "AusDdrEventsDiscordBot",
+            "Scopes": [
+              {
+                "ResourceServerIdentifier": "TestAPI",
+                "Scopes": ["Test"]
+              },
+              {
+                "ResourceServerIdentifier": "AusDdrEventsApi",
+                "Scopes": ["connections:read", "users:read"]
+              }
+            ]
+          }
+        ],
         "ResourceServers": [
           {
             "Identifier": "TestAPI",
@@ -64,6 +79,18 @@
           {
             "Identifier": "AusDdrEventsApi",
             "Scopes": [
+              {
+                "Description": "Read connections",
+                "Name": "connections:read"
+              },
+              {
+                "Description": "Delete connections",
+                "Name": "connections:delete"
+              },
+              {
+                "Description": "Read users",
+                "Name": "users:read"
+              }
             ]
           }
         ],
@@ -82,6 +109,15 @@
         "Domain": "ddr.chris-sg.dev",
         "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/f12a7454-bbbc-440f-ae23-7f472b10b0b1"
       },
+      "cdnBucket": {
+        "CorsOrigins": [
+          "https://ddr.assets.chris-sg.dev"
+        ]
+      },
+      "cdnProxy": {
+        "Domain": "ddr.assets.chris-sg.dev",
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/90d11378-1e86-44e3-ba66-8b6ac1118e3d"
+      },
       "hostedEC2AppProps": {
         "AvailabilityZones": [
           "ap-southeast-2a",
@@ -93,7 +129,7 @@
       },
       "ec2AppCloudFrontProxyProps": {
         "Domain": "ddr.api.chris-sg.dev",
-        "SslArn": ""
+        "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/8651fa10-caa6-42b5-a96a-627ec0bf5239"
       }
     },
     "staging": {
@@ -126,10 +162,25 @@
             ]
           }
         ],
+        "ServiceClients": [
+          {
+            "Identifier": "AusDdrEventsDiscordBot",
+            "Scopes": [
+              {
+                "ResourceServerIdentifier": "AusDdrEventsApi",
+                "Scopes": ["connections:read"]
+              }
+            ]
+          }
+        ],
         "ResourceServers": [
           {
             "Identifier": "AusDdrEventsApi",
             "Scopes": [
+              {
+                "Name": "connections:read",
+                "Description": "Provides read access to user service connections"
+              }
             ]
           }
         ],
@@ -200,10 +251,25 @@
             ]
           }
         ],
+        "ServiceClients": [
+          {
+            "Identifier": "AusDdrEventsDiscordBot",
+            "Scopes": [
+              {
+                "ResourceServerIdentifier": "AusDdrEventsApi",
+                "Scopes": ["connections:read"]
+              }
+            ]
+          }
+        ],
         "ResourceServers": [
           {
             "Identifier": "AusDdrEventsApi",
             "Scopes": [
+              {
+                "Name": "connections:read",
+                "Description": "Provides read access to user service connections"
+              }
             ]
           }
         ],

@@ -42,12 +42,16 @@ jobs:
           command: |
             dotnet restore ./src/CognitoEnhanced.sln
             apt update -y
-            apt install nodejs npm -y
-            npm install -g npm@latest
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+            source ~/.bashrc
+            nvm install 16
+            nvm use 16
             npm install -g aws-cdk
       - run:
           name: "Execute CDK"
           command: |
+            source ~/.bashrc
+            nvm use 16
             cdk synthesize -c env="${ENVIRONMENT}" "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack"  "${ENVIRONMENT}-cdn-stack" "${ENVIRONMENT}-ec2app-stack"
             cdk bootstrap -c env="${ENVIRONMENT}"
             cdk deploy -c env="${ENVIRONMENT}" --progress bar "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack" "${ENVIRONMENT}-cdn-stack" "${ENVIRONMENT}-ec2app-stack"
