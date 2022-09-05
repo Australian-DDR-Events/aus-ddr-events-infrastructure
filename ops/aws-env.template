@@ -6,3 +6,7 @@ api-config/FileStorage=
 api-config/oauth2identity/Audience=
 api-config/oauth2identity/Issuer=
 api-config/oauth2identity/UserInfoEndpoint=
+api-config/discordapi/DiscordApiEndpoint=
+api-config/discordapi/ClientId=
+api-config/discordapi/ClientSecret=
+api-config/discordapi/RedirectUri=
