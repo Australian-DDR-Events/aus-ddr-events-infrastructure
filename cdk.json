@@ -36,13 +36,13 @@
           {
             "Identifier": "AusDdrEventsWebApp",
             "CallbackUrls": [
-              "http://localhost:1234/callback"
+              "http://localhost:1234/callback/"
             ],
             "LogoutUrls": [
               "http://localhost:1234/",
-              "http://localhost:1234/logout"
+              "http://localhost:1234/logout/"
             ],
-            "UseBackend": false,
+            "UseBackend": true,
             "Scopes": [
               {
                 "ResourceServerIdentifier": "AusDdrEventsApi",
@@ -147,13 +147,13 @@
           {
             "Identifier": "AusDdrEventsWebApp",
             "CallbackUrls": [
-              "https://stg.ausddrevents.com/callback"
+              "https://stg.ausddrevents.com/callback/"
             ],
             "LogoutUrls": [
               "https://stg.ausddrevents.com",
-              "https://stg.ausddrevents.com/logout"
+              "https://stg.ausddrevents.com/logout/"
             ],
-            "UseBackend": false,
+            "UseBackend": true,
             "Scopes": [
               {
                 "ResourceServerIdentifier": "AusDdrEventsApi",
@@ -236,13 +236,13 @@
           {
             "Identifier": "AusDdrEventsWebApp",
             "CallbackUrls": [
-              "https://ausddrevents.com/callback"
+              "https://ausddrevents.com/callback/"
             ],
             "LogoutUrls": [
               "https://ausddrevents.com",
-              "https://ausddrevents.com/logout"
+              "https://ausddrevents.com/logout/"
             ],
-            "UseBackend": false,
+            "UseBackend": true,
             "Scopes": [
               {
                 "ResourceServerIdentifier": "AusDdrEventsApi",
