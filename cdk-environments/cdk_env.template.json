@@ -1,0 +1,93 @@
+{
+  "label": "env",
+  "migrationCognito": {
+    "UserMigrationLambda": {
+      "ResourcesPath": "resources_out/MigrationCognito",
+      "FirebaseApiKeyPath": ""
+    },
+    "Domain": "",
+    "SslArn": "",
+    "SesArn": "",
+    "EmailFromAddress": "",
+    "UserClients": [
+      {
+        "Identifier": "AusDdrEventsWebApp",
+        "CallbackUrls": ["http://localhost:1234/callback/"],
+        "LogoutUrls": [
+          "http://localhost:1234/",
+          "http://localhost:1234/logout/"
+        ],
+        "UseBackend": true,
+        "Scopes": [
+          {
+            "ResourceServerIdentifier": "AusDdrEventsApi",
+            "Scopes": []
+          }
+        ]
+      }
+    ],
+    "ServiceClients": [
+      {
+        "Identifier": "AusDdrEventsDiscordBot",
+        "Scopes": [
+          {
+            "ResourceServerIdentifier": "AusDdrEventsApi",
+            "Scopes": ["connections:read", "users:read"]
+          }
+        ]
+      }
+    ],
+    "ResourceServers": [
+      {
+        "Identifier": "AusDdrEventsApi",
+        "Scopes": [
+          {
+            "Description": "Read connections",
+            "Name": "connections:read"
+          },
+          {
+            "Description": "Delete connections",
+            "Name": "connections:delete"
+          },
+          {
+            "Description": "Read users",
+            "Name": "users:read"
+          }
+        ]
+      }
+    ],
+    "UserPoolGroups": [
+      {
+        "Description": "Aus DDR Events Administrators",
+        "GroupName": "Administrators"
+      }
+    ]
+  },
+  "appBucket": {
+    "App": ""
+  },
+  "cloudFrontProxy": {
+    "Domain": "",
+    "SslArn": ""
+  },
+  "cdnBucket": {
+    "CorsOrigins": [""]
+  },
+  "cdnProxy": {
+    "Domain": "",
+    "SslArn": ""
+  },
+  "hostedEC2AppProps": {
+    "AvailabilityZones": [
+      "ap-southeast-2a",
+      "ap-southeast-2b",
+      "ap-southeast-2c"
+    ],
+    "SshKeyName": "",
+    "UserDataPath": "ops/ec2-startup.sh"
+  },
+  "ec2AppCloudFrontProxyProps": {
+    "Domain": "",
+    "SslArn": ""
+  }
+}
