@@ -1,0 +1,106 @@
+{
+  "label": "dev",
+  "migrationCognito": {
+    "UserMigrationLambda": {
+      "ResourcesPath": "resources_out/MigrationCognito",
+      "FirebaseApiKeyPath": "/dev-cognito-enhanced-stack/migration-cognito/user-pool-trigger/firebase-api-key"
+    },
+    "Domain": "id.chris-sg.dev",
+    "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/330d096b-585d-48c1-9931-422eb9b072a7",
+    "SesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
+    "EmailFromAddress": "admin@ausddrevents.com",
+    "UserClients": [
+      {
+        "Identifier": "AusDdrEventsWebApp",
+        "CallbackUrls": ["http://localhost:1234/callback/"],
+        "LogoutUrls": [
+          "http://localhost:1234/",
+          "http://localhost:1234/logout/"
+        ],
+        "UseBackend": true,
+        "Scopes": [
+          {
+            "ResourceServerIdentifier": "AusDdrEventsApi",
+            "Scopes": []
+          }
+        ]
+      }
+    ],
+    "ServiceClients": [
+      {
+        "Identifier": "AusDdrEventsDiscordBot",
+        "Scopes": [
+          {
+            "ResourceServerIdentifier": "TestAPI",
+            "Scopes": ["Test"]
+          },
+          {
+            "ResourceServerIdentifier": "AusDdrEventsApi",
+            "Scopes": ["connections:read", "users:read"]
+          }
+        ]
+      }
+    ],
+    "ResourceServers": [
+      {
+        "Identifier": "TestAPI",
+        "Scopes": [
+          {
+            "Description": "A test scope",
+            "Name": "Test"
+          }
+        ]
+      },
+      {
+        "Identifier": "AusDdrEventsApi",
+        "Scopes": [
+          {
+            "Description": "Read connections",
+            "Name": "connections:read"
+          },
+          {
+            "Description": "Delete connections",
+            "Name": "connections:delete"
+          },
+          {
+            "Description": "Read users",
+            "Name": "users:read"
+          }
+        ]
+      }
+    ],
+    "UserPoolGroups": [
+      {
+        "Description": "Aus DDR Events Administrators",
+        "GroupName": "Administrators"
+      }
+    ]
+  },
+  "appBucket": {
+    "App": ""
+  },
+  "cloudFrontProxy": {
+    "Domain": "ddr.chris-sg.dev",
+    "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/f12a7454-bbbc-440f-ae23-7f472b10b0b1"
+  },
+  "cdnBucket": {
+    "CorsOrigins": ["https://ddr.assets.chris-sg.dev"]
+  },
+  "cdnProxy": {
+    "Domain": "ddr.assets.chris-sg.dev",
+    "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/90d11378-1e86-44e3-ba66-8b6ac1118e3d"
+  },
+  "hostedEC2AppProps": {
+    "AvailabilityZones": [
+      "ap-southeast-2a",
+      "ap-southeast-2b",
+      "ap-southeast-2c"
+    ],
+    "SshKeyName": "aus-ddr-api-key",
+    "UserDataPath": "ops/ec2-startup.sh"
+  },
+  "ec2AppCloudFrontProxyProps": {
+    "Domain": "ddr.api.chris-sg.dev",
+    "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/8651fa10-caa6-42b5-a96a-627ec0bf5239"
+  }
+}

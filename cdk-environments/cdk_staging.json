@@ -1,0 +1,85 @@
+{
+  "label": "staging",
+  "migrationCognito": {
+    "UserMigrationLambda": {
+      "ResourcesPath": "resources_out/MigrationCognito",
+      "FirebaseApiKeyPath": "/staging-cognito-enhanced-stack/migration-cognito/user-pool-trigger/firebase-api-key"
+    },
+    "Domain": "stg.id.ausddrevents.com",
+    "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/799fe761-c985-4392-a3c7-43c4f528b941",
+    "SesArn": "arn:aws:ses:us-east-1:786677109833:identity/ausddrevents.com",
+    "EmailFromAddress": "admin@ausddrevents.com",
+    "UserClients": [
+      {
+        "Identifier": "AusDdrEventsWebApp",
+        "CallbackUrls": ["https://stg.ausddrevents.com/callback/"],
+        "LogoutUrls": [
+          "https://stg.ausddrevents.com",
+          "https://stg.ausddrevents.com/logout/"
+        ],
+        "UseBackend": true,
+        "Scopes": [
+          {
+            "ResourceServerIdentifier": "AusDdrEventsApi",
+            "Scopes": []
+          }
+        ]
+      }
+    ],
+    "ServiceClients": [
+      {
+        "Identifier": "AusDdrEventsDiscordBot",
+        "Scopes": [
+          {
+            "ResourceServerIdentifier": "AusDdrEventsApi",
+            "Scopes": ["connections:read"]
+          }
+        ]
+      }
+    ],
+    "ResourceServers": [
+      {
+        "Identifier": "AusDdrEventsApi",
+        "Scopes": [
+          {
+            "Name": "connections:read",
+            "Description": "Provides read access to user service connections"
+          }
+        ]
+      }
+    ],
+    "UserPoolGroups": [
+      {
+        "Description": "Aus DDR Events Administrators",
+        "GroupName": "Administrators"
+      }
+    ]
+  },
+  "appBucket": {
+    "App": ""
+  },
+  "cloudFrontProxy": {
+    "Domain": "stg.ausddrevents.com",
+    "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/c1de7792-64d1-4d05-b3ab-37fb606f5af2"
+  },
+  "cdnBucket": {
+    "CorsOrigins": ["https://stg.ausddrevents.com"]
+  },
+  "cdnProxy": {
+    "Domain": "stg.assets.ausddrevents.com",
+    "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/f74dcc57-271a-4ffd-bd25-d9573f88c16c"
+  },
+  "hostedEC2AppProps": {
+    "AvailabilityZones": [
+      "ap-southeast-2a",
+      "ap-southeast-2b",
+      "ap-southeast-2c"
+    ],
+    "SshKeyName": "aus-ddr-api-key",
+    "UserDataPath": "ops/ec2-startup.sh"
+  },
+  "ec2AppCloudFrontProxyProps": {
+    "Domain": "stg.api.ausddrevents.com",
+    "SslArn": "arn:aws:acm:us-east-1:786677109833:certificate/12f92e69-65ab-4f02-9ab5-8b3ac5d906fd"
+  }
+}

@@ -29,7 +29,7 @@ jobs:
           name: "Install unzip"
           command: |
             apt update -y
-            apt install zip unzip -y
+            apt install zip unzip jq -y
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
@@ -52,6 +52,7 @@ jobs:
           command: |
             source ~/.bashrc
             nvm use 16
+            jq -s '.[0].context.'"$ENVIRONMENT"' += .[1] | .[0]' cdk_base.json ./cdk-environments/cdk_$ENVIRONMENT.json > cdk.json
             cdk synthesize -c env="${ENVIRONMENT}" "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack"  "${ENVIRONMENT}-cdn-stack" "${ENVIRONMENT}-ec2app-stack"
             cdk bootstrap -c env="${ENVIRONMENT}"
             cdk deploy -c env="${ENVIRONMENT}" --progress bar "${ENVIRONMENT}-cognito-enhanced-stack" "${ENVIRONMENT}-webapp-stack" "${ENVIRONMENT}-cdn-stack" "${ENVIRONMENT}-ec2app-stack"
