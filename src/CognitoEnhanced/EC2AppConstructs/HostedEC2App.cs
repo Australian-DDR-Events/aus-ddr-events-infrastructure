@@ -26,7 +26,7 @@ namespace CognitoEnhanced.EC2AppConstructs
         {
             var vpc = new Vpc(this, "ec2app-vpc", new VpcProps
             {
-                Cidr = "10.0.0.0/16",
+                IpAddresses = IpAddresses.Cidr("10.0.0.0/16"),
                 NatGateways = 0,
                 SubnetConfiguration = new ISubnetConfiguration[]
                 {

@@ -92,7 +92,7 @@ namespace CognitoEnhanced.CognitoConstructs {
 
             var lambda = new Function(this, "user-pool-trigger", new FunctionProps() {
                 Code = Code.FromAsset(Path.Combine(props.ResourcesPath, "UserMigrationTrigger/out.zip")),
-                Runtime = Runtime.DOTNET_CORE_3_1,
+                Runtime = Runtime.DOTNET_6,
                 Handler = "MigrateUserTrigger::MigrateUserTrigger.Function::FunctionHandler",
                 Timeout = Duration.Seconds(5),
                 LogRetention = RetentionDays.ONE_DAY,
